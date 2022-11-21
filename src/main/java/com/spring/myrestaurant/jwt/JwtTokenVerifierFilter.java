@@ -47,7 +47,6 @@ public class JwtTokenVerifierFilter extends OncePerRequestFilter {
             new ObjectMapper().writeValue(response.getOutputStream(), error);
             throw e;
         }
-
         filterChain.doFilter(request, response);
     }
 

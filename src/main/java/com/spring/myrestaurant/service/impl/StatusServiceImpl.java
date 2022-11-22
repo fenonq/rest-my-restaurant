@@ -26,7 +26,7 @@ public class StatusServiceImpl implements StatusService {
         log.info("find all statuses");
         return statusRepository.findAll()
                 .stream()
-                .map(StatusMapper.INSTANCE::mapStatusDto)
+                .map(StatusMapper.INSTANCE::mapStatusToStatusDto)
                 .collect(Collectors.toList());
     }
 
@@ -34,15 +34,15 @@ public class StatusServiceImpl implements StatusService {
     public StatusDto findById(Long id) {
         log.info("find status with id {}", id);
         Status status = statusRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        return StatusMapper.INSTANCE.mapStatusDto(status);
+        return StatusMapper.INSTANCE.mapStatusToStatusDto(status);
     }
 
     @Override
     public StatusDto save(StatusDto statusDto) {
         log.info("save status");
-        Status status = StatusMapper.INSTANCE.mapStatus(statusDto);
+        Status status = StatusMapper.INSTANCE.mapStatusDtoToStatus(statusDto);
         status = statusRepository.save(status);
-        return StatusMapper.INSTANCE.mapStatusDto(status);
+        return StatusMapper.INSTANCE.mapStatusToStatusDto(status);
     }
 
     @Override
@@ -50,9 +50,9 @@ public class StatusServiceImpl implements StatusService {
     public StatusDto update(Long id, StatusDto statusDto) {
         log.info("update status with id {}", id);
         statusRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        Status status = StatusMapper.INSTANCE.mapStatus(statusDto);
+        Status status = StatusMapper.INSTANCE.mapStatusDtoToStatus(statusDto);
         status = statusRepository.save(status);
-        return StatusMapper.INSTANCE.mapStatusDto(status);
+        return StatusMapper.INSTANCE.mapStatusToStatusDto(status);
     }
 
     @Override

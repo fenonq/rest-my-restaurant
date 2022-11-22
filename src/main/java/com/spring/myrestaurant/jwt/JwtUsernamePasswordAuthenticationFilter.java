@@ -1,7 +1,7 @@
 package com.spring.myrestaurant.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.spring.myrestaurant.dto.UsernameAndPasswordAuthenticationRequestDto;
+import com.spring.myrestaurant.dto.UsernamePasswordAuthenticationRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,8 +30,8 @@ public class JwtUsernamePasswordAuthenticationFilter extends UsernamePasswordAut
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
         try {
-            UsernameAndPasswordAuthenticationRequestDto authenticationRequest = new ObjectMapper()
-                    .readValue(request.getInputStream(), UsernameAndPasswordAuthenticationRequestDto.class);
+            UsernamePasswordAuthenticationRequestDto authenticationRequest = new ObjectMapper()
+                    .readValue(request.getInputStream(), UsernamePasswordAuthenticationRequestDto.class);
             log.info("Username is {}", authenticationRequest.getUsername());
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     authenticationRequest.getUsername(),

@@ -147,8 +147,8 @@ class ReceiptServiceImplTest {
 
         verify(receiptRepository).save(any());
         assertThat(returnedReceipt, allOf(
-                hasProperty("dishes", hasItem(DishMapper.INSTANCE.mapDishDto(dish))),
-                hasProperty("customer", equalTo(UserMapper.INSTANCE.mapUserDto(customer)))
+                hasProperty("dishes", hasItem(DishMapper.INSTANCE.mapDishToDishDto(dish))),
+                hasProperty("customer", equalTo(UserMapper.INSTANCE.mapUserToUserDto(customer)))
         ));
     }
 

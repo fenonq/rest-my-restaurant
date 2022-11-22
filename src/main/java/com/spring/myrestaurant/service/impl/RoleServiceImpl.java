@@ -26,7 +26,7 @@ public class RoleServiceImpl implements RoleService {
         log.info("find all roles");
         return roleRepository.findAll()
                 .stream()
-                .map(RoleMapper.INSTANCE::mapRoleDto)
+                .map(RoleMapper.INSTANCE::mapRoleToRoleDto)
                 .collect(Collectors.toList());
     }
 
@@ -34,15 +34,15 @@ public class RoleServiceImpl implements RoleService {
     public RoleDto findById(Long id) {
         log.info("find role with id {}", id);
         Role role = roleRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        return RoleMapper.INSTANCE.mapRoleDto(role);
+        return RoleMapper.INSTANCE.mapRoleToRoleDto(role);
     }
 
     @Override
     public RoleDto save(RoleDto roleDto) {
         log.info("save role");
-        Role role = RoleMapper.INSTANCE.mapRole(roleDto);
+        Role role = RoleMapper.INSTANCE.mapRoleDtoToRole(roleDto);
         role = roleRepository.save(role);
-        return RoleMapper.INSTANCE.mapRoleDto(role);
+        return RoleMapper.INSTANCE.mapRoleToRoleDto(role);
     }
 
     @Override
@@ -50,9 +50,9 @@ public class RoleServiceImpl implements RoleService {
     public RoleDto update(Long id, RoleDto roleDto) {
         log.info("update role with id {}", id);
         roleRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        Role role = RoleMapper.INSTANCE.mapRole(roleDto);
+        Role role = RoleMapper.INSTANCE.mapRoleDtoToRole(roleDto);
         role = roleRepository.save(role);
-        return RoleMapper.INSTANCE.mapRoleDto(role);
+        return RoleMapper.INSTANCE.mapRoleToRoleDto(role);
     }
 
     @Override

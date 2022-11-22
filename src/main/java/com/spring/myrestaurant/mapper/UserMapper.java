@@ -12,11 +12,11 @@ public interface UserMapper {
 
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    User mapUser(UserDto userDto);
+    User mapUserDtoToUser(UserDto userDto);
 
-    UserDto mapUserDto(User user);
+    UserDto mapUserToUserDto(User user);
 
-    default User populateUserWithPresentUserDtoFields(User user, UserDto userDto) {
+    default User mapUserWithPresentUserDtoFields(User user, UserDto userDto) {
         String firstName = userDto.getFirstName();
         if (Objects.nonNull(firstName)) {
             user.setFirstName(firstName);

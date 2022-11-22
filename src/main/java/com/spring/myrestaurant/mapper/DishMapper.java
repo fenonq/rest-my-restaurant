@@ -10,8 +10,8 @@ public interface DishMapper {
 
     DishMapper INSTANCE = Mappers.getMapper(DishMapper.class);
 
-    Dish mapDish(DishDto dishDto);
+    Dish mapDishDtoToDish(DishDto dishDto);
 
-    DishDto mapDishDto(Dish dish);
+    DishDto mapDishToDishDto(Dish dish);
 
 }

@@ -10,8 +10,8 @@ public interface StatusMapper {
 
     StatusMapper INSTANCE = Mappers.getMapper(StatusMapper.class);
 
-    Status mapStatus(StatusDto statusDto);
+    Status mapStatusDtoToStatus(StatusDto statusDto);
 
-    StatusDto mapStatusDto(Status status);
+    StatusDto mapStatusToStatusDto(Status status);
 
 }

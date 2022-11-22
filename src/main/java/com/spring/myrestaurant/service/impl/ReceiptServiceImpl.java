@@ -32,7 +32,7 @@ public class ReceiptServiceImpl implements ReceiptService {
         log.info("find all receipts");
         return receiptRepository.findAll()
                 .stream()
-                .map(ReceiptMapper.INSTANCE::mapReceiptDto)
+                .map(ReceiptMapper.INSTANCE::mapReceiptToReceiptDto)
                 .collect(Collectors.toList());
     }
 
@@ -40,15 +40,15 @@ public class ReceiptServiceImpl implements ReceiptService {
     public ReceiptDto findById(Long id) {
         log.info("find receipt with id {}", id);
         Receipt receipt = receiptRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        return ReceiptMapper.INSTANCE.mapReceiptDto(receipt);
+        return ReceiptMapper.INSTANCE.mapReceiptToReceiptDto(receipt);
     }
 
     @Override
     public ReceiptDto save(ReceiptDto receiptDto) {
         log.info("save receipt");
-        Receipt receipt = ReceiptMapper.INSTANCE.mapReceipt(receiptDto);
+        Receipt receipt = ReceiptMapper.INSTANCE.mapReceiptDtoToReceipt(receiptDto);
         receipt = receiptRepository.save(receipt);
-        return ReceiptMapper.INSTANCE.mapReceiptDto(receipt);
+        return ReceiptMapper.INSTANCE.mapReceiptToReceiptDto(receipt);
     }
 
     @Override
@@ -56,9 +56,9 @@ public class ReceiptServiceImpl implements ReceiptService {
     public ReceiptDto update(Long id, ReceiptDto receiptDto) {
         log.info("update receipt with id {}", id);
         receiptRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        Receipt receipt = ReceiptMapper.INSTANCE.mapReceipt(receiptDto);
+        Receipt receipt = ReceiptMapper.INSTANCE.mapReceiptDtoToReceipt(receiptDto);
         receipt = receiptRepository.save(receipt);
-        return ReceiptMapper.INSTANCE.mapReceiptDto(receipt);
+        return ReceiptMapper.INSTANCE.mapReceiptToReceiptDto(receipt);
     }
 
     @Override
@@ -104,7 +104,7 @@ public class ReceiptServiceImpl implements ReceiptService {
 
         receiptRepository.save(receipt);
 
-        return ReceiptMapper.INSTANCE.mapReceiptDto(receipt);
+        return ReceiptMapper.INSTANCE.mapReceiptToReceiptDto(receipt);
     }
 
     @Override
@@ -131,7 +131,7 @@ public class ReceiptServiceImpl implements ReceiptService {
 
             receiptRepository.save(receipt);
         }
-        return ReceiptMapper.INSTANCE.mapReceiptDto(receipt);
+        return ReceiptMapper.INSTANCE.mapReceiptToReceiptDto(receipt);
     }
 
     @Override
@@ -158,7 +158,7 @@ public class ReceiptServiceImpl implements ReceiptService {
         }
 
         receiptRepository.save(receipt);
-        return ReceiptMapper.INSTANCE.mapReceiptDto(receipt);
+        return ReceiptMapper.INSTANCE.mapReceiptToReceiptDto(receipt);
     }
 
     @Override
@@ -166,7 +166,7 @@ public class ReceiptServiceImpl implements ReceiptService {
         log.info("find all receipts by customer username {}", username);
         return receiptRepository.findByCustomerUsername(username)
                 .stream()
-                .map(ReceiptMapper.INSTANCE::mapReceiptDto)
+                .map(ReceiptMapper.INSTANCE::mapReceiptToReceiptDto)
                 .collect(Collectors.toList());
     }
 

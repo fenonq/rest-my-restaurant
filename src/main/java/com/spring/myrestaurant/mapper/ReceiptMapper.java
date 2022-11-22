@@ -10,8 +10,8 @@ public interface ReceiptMapper {
 
     ReceiptMapper INSTANCE = Mappers.getMapper(ReceiptMapper.class);
 
-    Receipt mapReceipt(ReceiptDto receiptDto);
+    Receipt mapReceiptDtoToReceipt(ReceiptDto receiptDto);
 
-    ReceiptDto mapReceiptDto(Receipt receipt);
+    ReceiptDto mapReceiptToReceiptDto(Receipt receipt);
 
 }

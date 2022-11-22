@@ -29,7 +29,7 @@ public class DishServiceImpl implements DishService {
         log.info("find all dishes");
         return dishRepository.findAll()
                 .stream()
-                .map(DishMapper.INSTANCE::mapDishDto)
+                .map(DishMapper.INSTANCE::mapDishToDishDto)
                 .collect(Collectors.toList());
     }
 
@@ -37,16 +37,16 @@ public class DishServiceImpl implements DishService {
     public DishDto findById(Long id) {
         log.info("find dish with id {}", id);
         Dish dish = dishRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        return DishMapper.INSTANCE.mapDishDto(dish);
+        return DishMapper.INSTANCE.mapDishToDishDto(dish);
     }
 
     @Override
     public DishDto save(DishDto dishDto) {
         log.info("save dish");
-        Dish dish = DishMapper.INSTANCE.mapDish(dishDto);
+        Dish dish = DishMapper.INSTANCE.mapDishDtoToDish(dishDto);
         dish.setVisible(true);
         dish = dishRepository.save(dish);
-        return DishMapper.INSTANCE.mapDishDto(dish);
+        return DishMapper.INSTANCE.mapDishToDishDto(dish);
     }
 
     @Override
@@ -54,10 +54,10 @@ public class DishServiceImpl implements DishService {
     public DishDto update(Long id, DishDto dishDto) {
         log.info("update dish with id {}", id);
         Dish existingDish = dishRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        Dish dish = DishMapper.INSTANCE.mapDish(dishDto);
+        Dish dish = DishMapper.INSTANCE.mapDishDtoToDish(dishDto);
         dish.setVisible(existingDish.isVisible());
         dish = dishRepository.save(dish);
-        return DishMapper.INSTANCE.mapDishDto(dish);
+        return DishMapper.INSTANCE.mapDishToDishDto(dish);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class DishServiceImpl implements DishService {
     public Page<DishDto> findAll(Pageable pageable) {
         log.info("find all dishes {}", pageable);
         Page<Dish> pagedResult = dishRepository.findAll(pageable);
-        return new PageImpl<>(pagedResult.getContent().stream().map(DishMapper.INSTANCE::mapDishDto)
+        return new PageImpl<>(pagedResult.getContent().stream().map(DishMapper.INSTANCE::mapDishToDishDto)
                 .collect(Collectors.toList()), pageable, pagedResult.getSize());
     }
 
@@ -83,7 +83,7 @@ public class DishServiceImpl implements DishService {
         Dish dish = dishRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         dish.setVisible(!dish.isVisible());
         dishRepository.save(dish);
-        return DishMapper.INSTANCE.mapDishDto(dish);
+        return DishMapper.INSTANCE.mapDishToDishDto(dish);
     }
 
 }

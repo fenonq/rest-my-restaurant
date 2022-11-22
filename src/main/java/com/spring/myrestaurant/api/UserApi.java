@@ -2,7 +2,7 @@ package com.spring.myrestaurant.api;
 
 import com.spring.myrestaurant.controller.model.UserModel;
 import com.spring.myrestaurant.dto.UserDto;
-import com.spring.myrestaurant.dto.UsernameAndPasswordAuthenticationRequestDto;
+import com.spring.myrestaurant.dto.UsernamePasswordAuthenticationRequestDto;
 import com.spring.myrestaurant.dto.group.OnCreate;
 import com.spring.myrestaurant.dto.group.OnUpdate;
 import io.swagger.annotations.*;
@@ -38,7 +38,7 @@ public interface UserApi {
     @ApiOperation("Login")
     @ResponseStatus(HttpStatus.OK)
     @PostMapping(value = "/login")
-    default void login(@RequestBody UsernameAndPasswordAuthenticationRequestDto usernameAndPassword) {
+    default void login(@RequestBody UsernamePasswordAuthenticationRequestDto usernameAndPassword) {
         throw new IllegalStateException("This method shouldn't be called. It's implemented by Spring Security filters.");
     }
 

@@ -27,7 +27,7 @@ public class CategoryServiceImpl implements CategoryService {
         log.info("find all categories");
         return categoryRepository.findAll()
                 .stream()
-                .map(CategoryMapper.INSTANCE::mapCategoryDto)
+                .map(CategoryMapper.INSTANCE::mapCategoryToCategoryDto)
                 .collect(Collectors.toList());
     }
 
@@ -35,16 +35,16 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto findById(Long id) {
         log.info("find category with id {}", id);
         Category category = categoryRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        return CategoryMapper.INSTANCE.mapCategoryDto(category);
+        return CategoryMapper.INSTANCE.mapCategoryToCategoryDto(category);
     }
 
     @Override
     public CategoryDto save(CategoryDto categoryDto) {
         log.info("save category");
-        Category category = CategoryMapper.INSTANCE.mapCategory(categoryDto);
+        Category category = CategoryMapper.INSTANCE.mapCategoryDtoToCategory(categoryDto);
         category.setVisible(true);
         category = categoryRepository.save(category);
-        return CategoryMapper.INSTANCE.mapCategoryDto(category);
+        return CategoryMapper.INSTANCE.mapCategoryToCategoryDto(category);
     }
 
     @Override
@@ -52,11 +52,11 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto update(Long id, CategoryDto categoryDto) {
         log.info("update category with id {}", id);
         Category existingCategory = categoryRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        Category category = CategoryMapper.INSTANCE.mapCategory(categoryDto);
+        Category category = CategoryMapper.INSTANCE.mapCategoryDtoToCategory(categoryDto);
         category.setDishes(existingCategory.getDishes());
         category.setVisible(existingCategory.isVisible());
         category = categoryRepository.save(category);
-        return CategoryMapper.INSTANCE.mapCategoryDto(category);
+        return CategoryMapper.INSTANCE.mapCategoryToCategoryDto(category);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class CategoryServiceImpl implements CategoryService {
             dish.setVisible(visibility);
         }
         categoryRepository.save(category);
-        return CategoryMapper.INSTANCE.mapCategoryDto(category);
+        return CategoryMapper.INSTANCE.mapCategoryToCategoryDto(category);
     }
 
 }

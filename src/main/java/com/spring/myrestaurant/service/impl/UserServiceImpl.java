@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         log.info("find all users");
         return userRepository.findAll()
                 .stream()
-                .map(UserMapper.INSTANCE::mapUserDto)
+                .map(UserMapper.INSTANCE::mapUserToUserDto)
                 .collect(Collectors.toList());
     }
 
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserDto findById(Long id) {
         log.info("find user with id {}", id);
         User user = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        return UserMapper.INSTANCE.mapUserDto(user);
+        return UserMapper.INSTANCE.mapUserToUserDto(user);
     }
 
     @Override
@@ -60,12 +60,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (userRepository.findByUsername(userDto.getUsername()) != null) {
             throw new EntityExistsException("User with this username already exists");
         }
-        User user = UserMapper.INSTANCE.mapUser(userDto);
+        User user = UserMapper.INSTANCE.mapUserDtoToUser(userDto);
         user.setActive(true);
         user.setRoles(new ArrayList<>(List.of(roleRepository.findByName("ROLE_USER"))));
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         user = userRepository.save(user);
-        return UserMapper.INSTANCE.mapUserDto(user);
+        return UserMapper.INSTANCE.mapUserToUserDto(user);
     }
 
     @Override
@@ -73,8 +73,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserDto update(Long id, UserDto userDto) {
         log.info("update user with id {}", id);
         User user = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        user = userRepository.save(UserMapper.INSTANCE.populateUserWithPresentUserDtoFields(user, userDto));
-        return UserMapper.INSTANCE.mapUserDto(user);
+        user = userRepository.save(UserMapper.INSTANCE.mapUserWithPresentUserDtoFields(user, userDto));
+        return UserMapper.INSTANCE.mapUserToUserDto(user);
     }
 
     @Override
@@ -82,8 +82,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserDto update(String username, UserDto userDto) {
         log.info("update user with username {}", username);
         User user = userRepository.findByUsername(username);
-        user = userRepository.save(UserMapper.INSTANCE.populateUserWithPresentUserDtoFields(user, userDto));
-        return UserMapper.INSTANCE.mapUserDto(user);
+        user = userRepository.save(UserMapper.INSTANCE.mapUserWithPresentUserDtoFields(user, userDto));
+        return UserMapper.INSTANCE.mapUserToUserDto(user);
     }
 
     @Override
@@ -99,7 +99,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserDto findUserByUsername(String username) {
         log.info("find user with username {}", username);
         User user = userRepository.findByUsername(username);
-        return UserMapper.INSTANCE.mapUserDto(user);
+        return UserMapper.INSTANCE.mapUserToUserDto(user);
     }
 
     @Override
@@ -113,7 +113,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             user.getCart().add(dish);
             user = userRepository.save(user);
         }
-        return UserMapper.INSTANCE.mapUserDto(user);
+        return UserMapper.INSTANCE.mapUserToUserDto(user);
     }
 
     @Override
@@ -127,7 +127,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             user.getCart().remove(dish);
             user = userRepository.save(user);
         }
-        return UserMapper.INSTANCE.mapUserDto(user);
+        return UserMapper.INSTANCE.mapUserToUserDto(user);
     }
 
     @Override
@@ -137,7 +137,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
         userRepository.changUserStatus(userId, !user.getActive());
         user.setActive(!user.getActive());
-        return UserMapper.INSTANCE.mapUserDto(user);
+        return UserMapper.INSTANCE.mapUserToUserDto(user);
     }
 
     @Override
@@ -148,7 +148,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         Role role = roleRepository.findById(roleId).orElseThrow(EntityNotFoundException::new);
         user.getRoles().clear();
         user.setRoles(new ArrayList<>(List.of(role)));
-        return UserMapper.INSTANCE.mapUserDto(user);
+        return UserMapper.INSTANCE.mapUserToUserDto(user);
     }
 
     @Override

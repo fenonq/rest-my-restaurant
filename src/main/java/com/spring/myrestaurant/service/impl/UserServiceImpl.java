@@ -1,8 +1,11 @@
 package com.spring.myrestaurant.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.myrestaurant.dto.UserDto;
 import com.spring.myrestaurant.exception.EntityExistsException;
 import com.spring.myrestaurant.exception.EntityNotFoundException;
+import com.spring.myrestaurant.mapper.DishMapper;
 import com.spring.myrestaurant.mapper.UserMapper;
 import com.spring.myrestaurant.model.Dish;
 import com.spring.myrestaurant.model.Role;
@@ -24,6 +27,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -128,6 +132,25 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             user = userRepository.save(user);
         }
         return UserMapper.INSTANCE.mapUserToUserDto(user);
+    }
+
+    @Override
+    @Transactional
+    public Map<Object, Long> getUserCart(String username) {
+        User user = userRepository.findByUsername(username);
+        return user.getCart()
+                .stream()
+                .collect(Collectors
+                        .groupingBy((dish) -> {
+                                    try {
+                                        return new ObjectMapper()
+                                                .writeValueAsString(DishMapper.INSTANCE.mapDishToDishDto(dish));
+                                    } catch (JsonProcessingException e) {
+                                        log.error(e.getMessage(), e);
+                                        return null;
+                                    }
+                                },
+                                Collectors.counting()));
     }
 
     @Override

@@ -21,8 +21,29 @@ public class TestDataUtil {
     public static final String USERNAME = "Username";
     public static final String PASSWORD = "Password";
     public static final String ROLE_USER = "ROLE_USER";
+    public static final String ACCESS_TOKEN = "accessToken";
     public static final int PRICE = 100;
     public static final int WEIGHT = 100;
+    public static final String AUTH_URL = "/api/v1/authentication";
+    public static final String CATEGORIES_URL = "/api/v1/categories";
+    public static final String DISHES_URL = "/api/v1/dishes";
+    public static final String RECEIPTS_URL = "/api/v1/receipts";
+    public static final String STATUSES_URL = "/api/v1/statuses";
+    public static final String USERS_URL = "/api/v1/users";
+
+
+    public static TokenResponseDto createTokenResponseDto() {
+        return TokenResponseDto.builder()
+                .accessToken(ACCESS_TOKEN)
+                .build();
+    }
+
+    public static AuthenticationRequestDto createAuthenticationRequestDto() {
+        return AuthenticationRequestDto.builder()
+                .username(USERNAME)
+                .password(PASSWORD)
+                .build();
+    }
 
     public static Category createCategory() {
         return Category.builder()

@@ -3,8 +3,9 @@ package com.spring.myrestaurant.controller;
 import com.spring.myrestaurant.controller.assembler.UserAssembler;
 import com.spring.myrestaurant.controller.model.UserModel;
 import com.spring.myrestaurant.dto.UserDto;
-import com.spring.myrestaurant.exception.EntityNotFoundException;
+import com.spring.myrestaurant.jwt.JwtService;
 import com.spring.myrestaurant.model.enums.ErrorType;
+import com.spring.myrestaurant.service.AuthenticationService;
 import com.spring.myrestaurant.service.UserService;
 import com.spring.myrestaurant.test.config.TestConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,7 +37,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(TestConfig.class)
 class UserControllerTest {
 
-    public static final String USERS_URL = "/api/v1/users";
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private AuthenticationService authenticationService;
 
     @MockBean
     private UserService userService;
@@ -71,85 +76,26 @@ class UserControllerTest {
         UserDto userDto = createUserDtoCustomer();
         UserModel userModel = new UserModel(userDto);
 
-        when(userService.findById(anyLong())).thenReturn(userDto);
+        when(userService.findUserByUsername(anyString())).thenReturn(userDto);
         when(userAssembler.toModel(userDto)).thenReturn(userModel);
 
-        mockMvc.perform(get(USERS_URL + "/" + ID))
+        mockMvc.perform(get(USERS_URL + "/" + USERNAME))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(ID))
                 .andExpect(jsonPath("$.username").value(userDto.getUsername()));
-        verify(userService).findById(anyLong());
-    }
-
-    @Test
-    void getUserNotFoundTest() throws Exception {
-        when(userService.findById(anyLong())).thenThrow(new EntityNotFoundException());
-
-        mockMvc.perform(get(USERS_URL + "/" + ID))
-                .andDo(print())
-                .andExpect(status().is5xxServerError())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorType").value(ErrorType.VALIDATION_ERROR_TYPE.name()));
-        verify(userService).findById(anyLong());
+        verify(userService).findUserByUsername(anyString());
     }
 
     @Test
     void fatalErrorTest() throws Exception {
-        when(userService.findById(anyLong())).thenThrow(new RuntimeException());
+        when(userService.findUserByUsername(anyString())).thenThrow(new RuntimeException());
 
-        mockMvc.perform(get(USERS_URL + "/" + ID))
+        mockMvc.perform(get(USERS_URL + "/" + USERNAME))
                 .andDo(print())
                 .andExpect(status().is5xxServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.errorType").value(ErrorType.FATAL_ERROR_TYPE.name()));
-    }
-
-    @Test
-    void createUserTest() throws Exception {
-        UserDto userDto = createUserDtoCustomer();
-        userDto.setId(null);
-        userDto.setActive(null);
-        userDto.setCart(null);
-        UserModel userModel = new UserModel(userDto);
-
-        when(userService.save(any(UserDto.class))).thenReturn(userDto);
-        when(userAssembler.toModel(userDto)).thenReturn(userModel);
-
-        mockMvc.perform(post(USERS_URL + "/signup")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userDto)))
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.username").value(userDto.getUsername()));
-        verify(userService).save(any(UserDto.class));
-    }
-
-    @Test
-    void createNotValidUserTest() throws Exception {
-        UserDto userDto = UserDto.builder().id(ID).build();
-        UserModel userModel = new UserModel(userDto);
-
-        when(userService.save(any(UserDto.class))).thenReturn(userDto);
-        when(userAssembler.toModel(userDto)).thenReturn(userModel);
-
-        mockMvc.perform(post(USERS_URL + "/signup")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userDto)))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpectAll(
-                        jsonPath("$[0].errorType").value(ErrorType.VALIDATION_ERROR_TYPE.name()),
-                        jsonPath("$[1].errorType").value(ErrorType.VALIDATION_ERROR_TYPE.name()),
-                        jsonPath("$[2].errorType").value(ErrorType.VALIDATION_ERROR_TYPE.name()),
-                        jsonPath("$[3].errorType").value(ErrorType.VALIDATION_ERROR_TYPE.name()),
-                        jsonPath("$[4].errorType").value(ErrorType.VALIDATION_ERROR_TYPE.name())
-                );
     }
 
     @Test

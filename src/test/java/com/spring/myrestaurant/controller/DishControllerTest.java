@@ -3,6 +3,7 @@ package com.spring.myrestaurant.controller;
 import com.spring.myrestaurant.controller.assembler.DishAssembler;
 import com.spring.myrestaurant.controller.model.DishModel;
 import com.spring.myrestaurant.dto.DishDto;
+import com.spring.myrestaurant.jwt.JwtService;
 import com.spring.myrestaurant.model.enums.ErrorType;
 import com.spring.myrestaurant.service.DishService;
 import com.spring.myrestaurant.test.config.TestConfig;
@@ -41,7 +42,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(TestConfig.class)
 class DishControllerTest {
 
-    public static final String DISHES_URL = "/api/v1/dishes";
+    @MockBean
+    private JwtService jwtService;
 
     @MockBean
     private DishService dishService;

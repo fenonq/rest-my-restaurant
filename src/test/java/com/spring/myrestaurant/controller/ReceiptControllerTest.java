@@ -3,6 +3,7 @@ package com.spring.myrestaurant.controller;
 import com.spring.myrestaurant.controller.assembler.ReceiptAssembler;
 import com.spring.myrestaurant.controller.model.ReceiptModel;
 import com.spring.myrestaurant.dto.ReceiptDto;
+import com.spring.myrestaurant.jwt.JwtService;
 import com.spring.myrestaurant.service.ReceiptService;
 import com.spring.myrestaurant.test.config.TestConfig;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(TestConfig.class)
 class ReceiptControllerTest {
 
-    public static final String RECEIPTS_URL = "/api/v1/receipts";
+    @MockBean
+    private JwtService jwtService;
 
     @MockBean
     private ReceiptService receiptService;

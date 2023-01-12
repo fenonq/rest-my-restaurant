@@ -2,10 +2,11 @@ package com.spring.myrestaurant.api;
 
 import com.spring.myrestaurant.controller.model.UserModel;
 import com.spring.myrestaurant.dto.UserDto;
-import com.spring.myrestaurant.dto.UsernamePasswordAuthenticationRequestDto;
-import com.spring.myrestaurant.dto.group.OnCreate;
 import com.spring.myrestaurant.dto.group.OnUpdate;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
+import java.util.Map;
 
 @Api(tags = "User management api")
 @RequestMapping("/api/v1/users")
@@ -23,24 +25,13 @@ public interface UserApi {
     List<UserModel> getAllUsers();
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", paramType = "path", required = true, value = "User id")
+            @ApiImplicitParam(name = "username", paramType = "path", required = true, value = "User username")
     })
-    @ApiOperation("Get user by id")
+    @ApiOperation("Get user by username")
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(value = "/{id}")
-    UserModel getUser(@PathVariable Long id);
+    @GetMapping(value = "/{username}")
+    UserModel getUser(@PathVariable String username);
 
-    @ApiOperation("Create user")
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/signup")
-    UserModel createUser(@RequestBody @Validated(OnCreate.class) UserDto userDto);
-
-    @ApiOperation("Login")
-    @ResponseStatus(HttpStatus.OK)
-    @PostMapping(value = "/login")
-    default void login(@RequestBody UsernamePasswordAuthenticationRequestDto usernameAndPassword) {
-        throw new IllegalStateException("This method shouldn't be called. It's implemented by Spring Security filters.");
-    }
 
     @ApiOperation("Update user firstName and lastName")
     @ResponseStatus(HttpStatus.OK)
@@ -62,6 +53,10 @@ public interface UserApi {
     @ApiOperation("Remove dish to user cart")
     @PatchMapping(value = "/cart/remove/{dishId}")
     UserModel removeDishFromCart(@PathVariable Long dishId, @ApiIgnore Authentication authentication);
+
+    @ApiOperation("Get user cart")
+    @GetMapping(value = "/cart")
+    Map<Object, Long> getUserCart(@ApiIgnore Authentication authentication);
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", paramType = "path", required = true, value = "User id")

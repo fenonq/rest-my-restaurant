@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -30,16 +31,9 @@ public class UserController implements UserApi {
     }
 
     @Override
-    public UserModel getUser(Long id) {
-        log.info("find user with id {}", id);
-        UserDto outUserDto = userService.findById(id);
-        return userAssembler.toModel(outUserDto);
-    }
-
-    @Override
-    public UserModel createUser(UserDto userDto) {
-        log.info("save user");
-        UserDto outUserDto = userService.save(userDto);
+    public UserModel getUser(String username) {
+        log.info("find user with username {}", username);
+        UserDto outUserDto = userService.findUserByUsername(username);
         return userAssembler.toModel(outUserDto);
     }
 
@@ -62,6 +56,12 @@ public class UserController implements UserApi {
         log.info("removing dish {} to user cart", dishId);
         UserDto outUserDto = userService.removeDishFromCart(authentication.getName(), dishId);
         return userAssembler.toModel(outUserDto);
+    }
+
+    @Override
+    public Map<Object, Long> getUserCart(Authentication authentication) {
+        log.info("get user {} cart", authentication.getName());
+        return userService.getUserCart(authentication.getName());
     }
 
     @Override

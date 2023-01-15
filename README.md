@@ -5,7 +5,7 @@
 database<br/>
 • Used Slf4j for logging<br/>
 • Tested using Junit and Mockito<br/>
-• All input elds are with data validation<br/>
+• All input fields are with data validation<br/>
 • Implemented authentication and authorization, delimitation of access rights of system users to software components by Spring Security<br/>
 • JWT Token<br/>
 • HATEOAS<br/>

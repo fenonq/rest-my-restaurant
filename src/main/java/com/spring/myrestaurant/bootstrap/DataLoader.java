@@ -57,27 +57,27 @@ public class DataLoader implements CommandLineRunner {
             userService.changeRole(userDto1.getId(), role_manager.getId());
             userService.changeRole(userDto2.getId(), role_admin.getId());
 
-            CategoryDto categoryDto1 = CategoryDto.builder()
+            CategoryDto categoryDto1 = categoryService.save(CategoryDto.builder()
                     .name("First dishes")
-                    .build();
+                    .build());
 
             DishDto dishDto1 = DishDto.builder()
                     .name("Borsch")
                     .description("Made from chopped beets, cabbage with potatoes and various spices")
-                    .category(categoryService.save(categoryDto1))
+                    .category(categoryDto1)
                     .price(105)
                     .weight(350)
                     .build();
             dishService.save(dishDto1);
 
-            CategoryDto categoryDto2 = CategoryDto.builder()
+            CategoryDto categoryDto2 = categoryService.save(CategoryDto.builder()
                     .name("Second dishes")
-                    .build();
+                    .build());
 
             DishDto dishDto2 = DishDto.builder()
                     .name("Varenyky")
                     .description("Varenyky with potatoes, mushrooms and sour cream")
-                    .category(categoryService.save(categoryDto2))
+                    .category(categoryDto2)
                     .price(107)
                     .weight(250)
                     .build();
@@ -86,20 +86,20 @@ public class DataLoader implements CommandLineRunner {
             DishDto dishDto3 = DishDto.builder()
                     .name("Potato pancakes")
                     .description("Fried potato pancakes in sauce with cherry tomatoes and sour cream")
-                    .category(categoryService.save(categoryDto2))
+                    .category(categoryDto2)
                     .price(123)
                     .weight(250)
                     .build();
             dishService.save(dishDto3);
 
-            CategoryDto categoryDto3 = CategoryDto.builder()
-                    .name("Second dishes")
-                    .build();
+            CategoryDto categoryDto3 = categoryService.save(CategoryDto.builder()
+                    .name("Salads")
+                    .build());
 
             DishDto dishDto4 = DishDto.builder()
                     .name("Caesar salad")
                     .description("Salad of chicken, croutons, parmesan cheese, tomatoes and sauce")
-                    .category(categoryService.save(categoryDto3))
+                    .category(categoryDto3)
                     .price(150)
                     .weight(250)
                     .build();

@@ -1,5 +1,6 @@
 package com.spring.myrestaurant.jwt;
 
+import com.spring.myrestaurant.model.Role;
 import com.spring.myrestaurant.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -14,9 +15,8 @@ import org.springframework.stereotype.Service;
 import java.security.Key;
 import java.time.LocalDate;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @PropertySource("classpath:security.properties")
@@ -38,17 +38,11 @@ public class JwtService {
     }
 
     public String generateToken(User userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
-    }
-
-    public String generateToken(
-            Map<String, Object> extraClaims,
-            User userDetails
-    ) {
         Date expiryDate = java.sql.Date.valueOf(LocalDate.now().plusDays(tokenExpirationDays));
         return Jwts
                 .builder()
-                .setClaims(extraClaims)
+                .claim("roles", userDetails.getRoles().stream()
+                        .map(Role::getName).collect(Collectors.toList()))
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)

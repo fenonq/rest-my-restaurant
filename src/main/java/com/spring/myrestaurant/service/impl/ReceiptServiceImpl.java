@@ -84,7 +84,6 @@ public class ReceiptServiceImpl implements ReceiptService {
                         .stream()
                         .mapToInt(Dish::getPrice)
                         .sum();
-
         Receipt receipt =
                 Receipt
                         .builder()
@@ -99,11 +98,8 @@ public class ReceiptServiceImpl implements ReceiptService {
                         .dishes(new ArrayList<>(user.getCart()))
                         .build();
 
-
         user.getCart().clear();
-
         receiptRepository.save(receipt);
-
         return ReceiptMapper.INSTANCE.mapReceiptToReceiptDto(receipt);
     }
 

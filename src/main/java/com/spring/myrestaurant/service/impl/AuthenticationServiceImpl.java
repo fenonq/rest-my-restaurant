@@ -5,6 +5,7 @@ import com.spring.myrestaurant.dto.TokenResponseDto;
 import com.spring.myrestaurant.dto.UserDto;
 import com.spring.myrestaurant.exception.EntityExistsException;
 import com.spring.myrestaurant.exception.EntityNotFoundException;
+import com.spring.myrestaurant.exception.UserBannedException;
 import com.spring.myrestaurant.jwt.JwtService;
 import com.spring.myrestaurant.model.User;
 import com.spring.myrestaurant.repository.RoleRepository;
@@ -57,6 +58,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         User user = userRepository.findByUsername(requestDto.getUsername());
         if (user == null) {
             throw new EntityNotFoundException("User not found!");
+        }
+        if (user.getActive() == Boolean.FALSE) {
+            throw new UserBannedException("User is banned!");
         }
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

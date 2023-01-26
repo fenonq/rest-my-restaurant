@@ -15,6 +15,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.List;
+
 @Api(tags = "Dish management api")
 @RequestMapping("/api/v1/dishes")
 public interface DishApi {
@@ -31,9 +33,14 @@ public interface DishApi {
     })
     @ApiOperation("Get all pageable dishes")
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping
-    Page<DishModel> getAllDishes(@ApiIgnore("Ignored because swagger ui shows the wrong params")
+    @GetMapping("/pageable")
+    Page<DishModel> getAllPageableDishes(@ApiIgnore("Ignored because swagger ui shows the wrong params")
                                          Pageable pageable);
+
+    @ApiOperation("Get all dishes")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping
+    List<DishModel> getAllDishes();
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", paramType = "path", required = true, value = "Dish id")

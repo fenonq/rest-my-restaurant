@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface DishService extends CrudService<DishDto, Long> {
 
-    Page<DishDto> findAll(Pageable pageable);
+    Page<DishDto> findAllByVisible(Pageable pageable);
 
     DishDto changeVisibility(Long id);
 

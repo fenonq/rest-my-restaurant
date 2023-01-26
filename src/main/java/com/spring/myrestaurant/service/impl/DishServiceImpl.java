@@ -69,9 +69,9 @@ public class DishServiceImpl implements DishService {
     }
 
     @Override
-    public Page<DishDto> findAll(Pageable pageable) {
+    public Page<DishDto> findAllByVisible(Pageable pageable) {
         log.info("find all dishes {}", pageable);
-        Page<Dish> pagedResult = dishRepository.findAll(pageable);
+        Page<Dish> pagedResult = dishRepository.findAllByVisible(pageable, Boolean.TRUE);
         return new PageImpl<>(pagedResult.getContent().stream().map(DishMapper.INSTANCE::mapDishToDishDto)
                 .collect(Collectors.toList()), pageable, pagedResult.getSize());
     }

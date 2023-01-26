@@ -1,5 +1,6 @@
 package com.spring.myrestaurant.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.myrestaurant.controller.assembler.DishAssembler;
 import com.spring.myrestaurant.controller.model.DishModel;
 import com.spring.myrestaurant.dto.DishDto;
@@ -7,7 +8,6 @@ import com.spring.myrestaurant.jwt.JwtService;
 import com.spring.myrestaurant.model.enums.ErrorType;
 import com.spring.myrestaurant.service.DishService;
 import com.spring.myrestaurant.test.config.TestConfig;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +24,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.spring.myrestaurant.test.util.TestDataUtil.*;
@@ -58,7 +59,7 @@ class DishControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void getAllDishesTest() throws Exception {
+    void getAllPageableDishesTest() throws Exception {
         int page = 0;
         int size = 2;
         DishDto dishDto = createDishDto();
@@ -68,10 +69,10 @@ class DishControllerTest {
 
         Page<DishDto> dishDtoPage = new PageImpl<>(dishDtoList, pageable, dishDtoList.size());
 
-        when(dishService.findAll(any(Pageable.class))).thenReturn(dishDtoPage);
+        when(dishService.findAllByVisible(any(Pageable.class))).thenReturn(dishDtoPage);
         when(dishAssembler.toModel(dishDto)).thenReturn(dishModel);
 
-        mockMvc.perform(get(DISHES_URL)
+        mockMvc.perform(get(DISHES_URL + "/pageable")
                         .queryParam("page", String.valueOf(page))
                         .queryParam("size", String.valueOf(size)))
                 .andDo(print())
@@ -80,7 +81,23 @@ class DishControllerTest {
                 .andExpect(jsonPath("$.pageable.pageNumber").value(page))
                 .andExpect(jsonPath("$.pageable.pageSize").value(size))
                 .andExpect(jsonPath("$.content[0].name").value(dishDto.getName()));
-        verify(dishService).findAll(any(Pageable.class));
+        verify(dishService).findAllByVisible(any(Pageable.class));
+    }
+
+    @Test
+    void getAllDishesTest() throws Exception {
+        DishDto dishDto = createDishDto();
+        DishModel dishModel = new DishModel(dishDto);
+
+        when(dishService.findAll()).thenReturn(Collections.singletonList(dishDto));
+        when(dishAssembler.toModel(dishDto)).thenReturn(dishModel);
+
+        mockMvc.perform(get(DISHES_URL))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].name").value(dishDto.getName()));
+        verify(dishService).findAll();
     }
 
     @Test

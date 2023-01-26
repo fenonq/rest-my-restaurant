@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -23,11 +24,19 @@ public class DishController implements DishApi {
     private final DishAssembler dishAssembler;
 
     @Override
-    public Page<DishModel> getAllDishes(Pageable pageable) {
+    public Page<DishModel> getAllPageableDishes(Pageable pageable) {
         log.info("find all pageable dishes {}", pageable);
-        Page<DishDto> outDishDtoList = dishService.findAll(pageable);
+        Page<DishDto> outDishDtoList = dishService.findAllByVisible(pageable);
         return new PageImpl<>(outDishDtoList.stream().map(dishAssembler::toModel)
                 .collect(Collectors.toList()), pageable, outDishDtoList.getSize());
+    }
+
+    @Override
+    public List<DishModel> getAllDishes() {
+        log.info("find all dishes");
+        List<DishDto> outDishDtoList = dishService.findAll();
+        return outDishDtoList.stream().map(dishAssembler::toModel)
+                .collect(Collectors.toList());
     }
 
     @Override

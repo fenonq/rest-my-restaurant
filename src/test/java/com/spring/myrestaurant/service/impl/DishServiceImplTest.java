@@ -138,12 +138,12 @@ class DishServiceImplTest {
         int size = 2;
         Pageable pageable = PageRequest.of(0, size);
 
-        when(dishRepository.findAll(pageable))
+        when(dishRepository.findAllByVisible(pageable, Boolean.TRUE))
                 .thenReturn(new PageImpl<>(dishes, pageable, dishes.size()));
 
-        Page<DishDto> returnedDishes = dishService.findAll(pageable);
+        Page<DishDto> returnedDishes = dishService.findAllByVisible(pageable);
 
-        verify(dishRepository).findAll(pageable);
+        verify(dishRepository).findAllByVisible(pageable, Boolean.TRUE);
         assertThat(returnedDishes.getPageable(), is(pageable));
         assertThat(returnedDishes.getSize(), is(size));
     }
